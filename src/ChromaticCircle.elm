@@ -1,5 +1,6 @@
 module ChromaticCircle exposing (chromaticCircle)
 
+import Notes exposing (Note(..))
 import Svg.Styled exposing (..)
 import Svg.Styled.Attributes exposing (..)
 
@@ -33,60 +34,116 @@ chromaticCircle size =
             , fill "none"
             ]
             []
-        , notePoint origin radius 0 percent
-        , notePoint origin radius 30 percent
-        , notePoint origin radius 60 percent
-        , notePoint origin radius 90 percent
-        , notePoint origin radius 120 percent
-        , notePoint origin radius 150 percent
-        , notePoint origin radius 180 percent
-        , notePoint origin radius 210 percent
-        , notePoint origin radius 240 percent
-        , notePoint origin radius 270 percent
-        , notePoint origin radius 300 percent
-        , notePoint origin radius 330 percent
-        , noteLabel "D♯ / E♭" origin radius 0 percent
-        , noteLabel "E" origin radius 30 percent
-        , noteLabel "F" origin radius 60 percent
-        , noteLabel "F♯ / D♭" origin radius 90 percent
-        , noteLabel "G" origin radius 120 percent
-        , noteLabel "G♯ / A♭" origin radius 150 percent
-        , noteLabel "A" origin radius 180 percent
-        , noteLabel "A♯ / B♭" origin radius 210 percent
-        , noteLabel "B" origin radius 240 percent
-        , noteLabel "C" origin radius 270 percent
-        , noteLabel "C♯ / D♭" origin radius 300 percent
-        , noteLabel "D" origin radius 330 percent
+        , notePoint origin radius DE percent
+        , notePoint origin radius E percent
+        , notePoint origin radius F percent
+        , notePoint origin radius FG percent
+        , notePoint origin radius G percent
+        , notePoint origin radius GA percent
+        , notePoint origin radius A percent
+        , notePoint origin radius AB percent
+        , notePoint origin radius B percent
+        , notePoint origin radius C percent
+        , notePoint origin radius CD percent
+        , notePoint origin radius D percent
+        , noteLabel DE origin radius percent
+        , noteLabel E origin radius percent
+        , noteLabel F origin radius percent
+        , noteLabel FG origin radius percent
+        , noteLabel G origin radius percent
+        , noteLabel GA origin radius percent
+        , noteLabel A origin radius percent
+        , noteLabel AB origin radius percent
+        , noteLabel B origin radius percent
+        , noteLabel C origin radius percent
+        , noteLabel CD origin radius percent
+        , noteLabel D origin radius percent
         ]
 
 
-notePoint : Float -> Float -> Float -> Float -> Svg msg
-notePoint origin radius degree percent =
+noteDegree : Note -> Float
+noteDegree note =
+    case note of
+        A ->
+            180.0
+
+        AB ->
+            210.0
+
+        B ->
+            240.0
+
+        C ->
+            270.0
+
+        CD ->
+            300.0
+
+        D ->
+            330.0
+
+        DE ->
+            0.0
+
+        E ->
+            30.0
+
+        F ->
+            60.0
+
+        FG ->
+            90.0
+
+        G ->
+            120.0
+
+        GA ->
+            150.0
+
+
+notePointCoords : Note -> Float -> ( Float, Float )
+notePointCoords note radius =
+    let
+        degree =
+            noteDegree note
+    in
+    ( radius * cos (degrees degree), radius * sin (degrees degree) )
+
+
+notePoint : Float -> Float -> Note -> Float -> Svg msg
+notePoint origin radius note percent =
+    let
+        ( noteX, noteY ) =
+            notePointCoords note radius
+    in
     circle
-        [ cx <| String.fromFloat (radius * cos (degrees degree) + origin)
-        , cy <| String.fromFloat (radius * sin (degrees degree) + origin)
+        [ cx <| String.fromFloat (noteX + origin)
+        , cy <| String.fromFloat (noteY + origin)
         , r <| String.fromFloat (1.0 * percent)
         ]
         []
 
 
-noteLabel : String -> Float -> Float -> Float -> Float -> Svg msg
-noteLabel note origin radius degree percent =
+noteLabel : Note -> Float -> Float -> Float -> Svg msg
+noteLabel note origin radius percent =
     let
         textRadius =
             radius + percent * 3
 
+        ( noteX, noteY ) =
+            notePointCoords note textRadius
+
         pointX =
-            String.fromFloat <| textRadius * cos (degrees degree) + origin
+            String.fromFloat <| noteX + origin
 
         pointY =
-            String.fromFloat <| textRadius * sin (degrees degree) + origin
+            String.fromFloat <| noteY + origin
     in
     text_
         [ x pointX
         , y pointY
         , textAnchor "middle"
         , fontSize <| String.fromFloat (percent * 4)
-        , transform <| "rotate(" ++ String.fromFloat (degree + 90) ++ "," ++ pointX ++ "," ++ pointY ++ ")"
+        , transform <| "rotate(" ++ String.fromFloat (noteDegree note + 90) ++ "," ++ pointX ++ "," ++ pointY ++ ")"
         ]
-        [ text note ]
+        [ text <| Notes.toString note ]

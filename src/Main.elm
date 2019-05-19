@@ -30,7 +30,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    chromaticCircle 800
+    chromaticCircle 600
 
 
 

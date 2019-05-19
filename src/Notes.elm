@@ -1,4 +1,4 @@
-module Notes exposing (Note(..), Scale, majorScale, scale, step)
+module Notes exposing (Note(..), Scale, majorScale, scale, step, toString)
 
 
 type Note
@@ -42,6 +42,46 @@ type alias Scale =
     , seventh : Note
     , eigth : Note
     }
+
+
+toString : Note -> String
+toString note =
+    case note of
+        A ->
+            "A"
+
+        AB ->
+            "A♯ / B♭"
+
+        B ->
+            "B"
+
+        C ->
+            "C"
+
+        CD ->
+            "C♯ / D♭"
+
+        D ->
+            "D"
+
+        DE ->
+            "D♯ / E♭"
+
+        E ->
+            "E"
+
+        F ->
+            "F"
+
+        FG ->
+            "F♯ / D♭"
+
+        G ->
+            "G"
+
+        GA ->
+            "G♯ / A♭"
 
 
 mapToneToSemiTones : Tone -> Int
