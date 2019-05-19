@@ -34,29 +34,29 @@ chromaticCircle size =
             , fill "none"
             ]
             []
-        , notePoint origin radius DE percent
-        , notePoint origin radius E percent
-        , notePoint origin radius F percent
-        , notePoint origin radius FG percent
-        , notePoint origin radius G percent
-        , notePoint origin radius GA percent
-        , notePoint origin radius A percent
-        , notePoint origin radius AB percent
-        , notePoint origin radius B percent
-        , notePoint origin radius C percent
-        , notePoint origin radius CD percent
-        , notePoint origin radius D percent
+        , notePoint DE origin radius percent
         , noteLabel DE origin radius percent
+        , notePoint E origin radius percent
         , noteLabel E origin radius percent
+        , notePoint F origin radius percent
         , noteLabel F origin radius percent
+        , notePoint FG origin radius percent
         , noteLabel FG origin radius percent
+        , notePoint G origin radius percent
         , noteLabel G origin radius percent
+        , notePoint GA origin radius percent
         , noteLabel GA origin radius percent
+        , notePoint A origin radius percent
         , noteLabel A origin radius percent
+        , notePoint AB origin radius percent
         , noteLabel AB origin radius percent
+        , notePoint B origin radius percent
         , noteLabel B origin radius percent
+        , notePoint C origin radius percent
         , noteLabel C origin radius percent
+        , notePoint CD origin radius percent
         , noteLabel CD origin radius percent
+        , notePoint D origin radius percent
         , noteLabel D origin radius percent
         ]
 
@@ -110,8 +110,8 @@ notePointCoords note radius =
     ( radius * cos (degrees degree), radius * sin (degrees degree) )
 
 
-notePoint : Float -> Float -> Note -> Float -> Svg msg
-notePoint origin radius note percent =
+notePoint : Note -> Float -> Float -> Float -> Svg msg
+notePoint note origin radius percent =
     let
         ( noteX, noteY ) =
             notePointCoords note radius
