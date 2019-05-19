@@ -58,6 +58,7 @@ chromaticCircle size =
         , noteLabel CD origin radius percent
         , notePoint D origin radius percent
         , noteLabel D origin radius percent
+        , scalePath FG origin radius
         ]
 
 
@@ -101,24 +102,24 @@ noteDegree note =
             150.0
 
 
-notePointCoords : Note -> Float -> ( Float, Float )
-notePointCoords note radius =
+notePointCoords : Note -> Float -> Float -> ( Float, Float )
+notePointCoords note origin radius =
     let
         degree =
             noteDegree note
     in
-    ( radius * cos (degrees degree), radius * sin (degrees degree) )
+    ( radius * cos (degrees degree) + origin, radius * sin (degrees degree) + origin )
 
 
 notePoint : Note -> Float -> Float -> Float -> Svg msg
 notePoint note origin radius percent =
     let
         ( noteX, noteY ) =
-            notePointCoords note radius
+            notePointCoords note origin radius
     in
     circle
-        [ cx <| String.fromFloat (noteX + origin)
-        , cy <| String.fromFloat (noteY + origin)
+        [ cx <| String.fromFloat noteX
+        , cy <| String.fromFloat noteY
         , r <| String.fromFloat (1.0 * percent)
         ]
         []
@@ -131,13 +132,13 @@ noteLabel note origin radius percent =
             radius + percent * 3
 
         ( noteX, noteY ) =
-            notePointCoords note textRadius
+            notePointCoords note origin textRadius
 
         pointX =
-            String.fromFloat <| noteX + origin
+            String.fromFloat noteX
 
         pointY =
-            String.fromFloat <| noteY + origin
+            String.fromFloat noteY
     in
     text_
         [ x pointX
@@ -147,3 +148,107 @@ noteLabel note origin radius percent =
         , transform <| "rotate(" ++ String.fromFloat (noteDegree note + 90) ++ "," ++ pointX ++ "," ++ pointY ++ ")"
         ]
         [ text <| Notes.toString note ]
+
+
+scalePath : Note -> Float -> Float -> Svg msg
+scalePath rootNote origin radius =
+    let
+        ( firstPointX, firstPointY ) =
+            notePointCoords C origin radius
+
+        ( secondPointX, secondPointY ) =
+            notePointCoords D origin radius
+
+        ( thirdPointX, thirdPointY ) =
+            notePointCoords E origin radius
+
+        ( fourthPointX, fourthPointY ) =
+            notePointCoords F origin radius
+
+        ( fifthPointX, fifthPointY ) =
+            notePointCoords G origin radius
+
+        ( sixthPointX, sixthPointY ) =
+            notePointCoords A origin radius
+
+        ( seventhPointX, seventhPointY ) =
+            notePointCoords B origin radius
+
+        pathRotation =
+            case rootNote of
+                A ->
+                    -90.0
+
+                AB ->
+                    -60.0
+
+                B ->
+                    -30.0
+
+                C ->
+                    0.0
+
+                CD ->
+                    30.0
+
+                D ->
+                    60.0
+
+                DE ->
+                    90.0
+
+                E ->
+                    120.0
+
+                F ->
+                    150.0
+
+                FG ->
+                    180.0
+
+                G ->
+                    210.0
+
+                GA ->
+                    240.0
+
+        pathString =
+            String.join ""
+                [ "M"
+                , String.fromFloat firstPointX
+                , " "
+                , String.fromFloat firstPointY
+                , " L"
+                , String.fromFloat secondPointX
+                , " "
+                , String.fromFloat secondPointY
+                , " L"
+                , String.fromFloat thirdPointX
+                , " "
+                , String.fromFloat thirdPointY
+                , " L"
+                , String.fromFloat fourthPointX
+                , " "
+                , String.fromFloat fourthPointY
+                , " L"
+                , String.fromFloat fifthPointX
+                , " "
+                , String.fromFloat fifthPointY
+                , " L"
+                , String.fromFloat sixthPointX
+                , " "
+                , String.fromFloat sixthPointY
+                , " L"
+                , String.fromFloat seventhPointX
+                , " "
+                , String.fromFloat seventhPointY
+                , " Z"
+                ]
+    in
+    Svg.Styled.path
+        [ d pathString
+        , fill "none"
+        , stroke "black"
+        , transform ("rotate(" ++ String.fromFloat pathRotation ++ ", " ++ String.fromFloat origin ++ "," ++ String.fromFloat origin ++ ")")
+        ]
+        []
