@@ -1,8 +1,8 @@
 module Main exposing (main)
 
 import Browser exposing (Document)
+import ChromaticCircle exposing (chromaticCircle)
 import Html.Styled exposing (Html)
-import Notes exposing (Note, step)
 
 
 
@@ -30,7 +30,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    Html.Styled.text "Hello World!"
+    chromaticCircle 800
 
 
 
