@@ -1,12 +1,13 @@
 module ChromaticCircle exposing (chromaticCircle)
 
+import Css.Transitions exposing (transition)
 import Notes exposing (Note(..))
 import Svg.Styled exposing (..)
 import Svg.Styled.Attributes exposing (..)
 
 
-chromaticCircle : Float -> Svg msg
-chromaticCircle size =
+chromaticCircle : Note -> Float -> Svg msg
+chromaticCircle rootNote size =
     let
         radiusPercent =
             80
@@ -58,7 +59,7 @@ chromaticCircle size =
         , noteLabel CD origin radius percent
         , notePoint D origin radius percent
         , noteLabel D origin radius percent
-        , scalePath FG origin radius
+        , scalePath rootNote origin radius
         ]
 
 
@@ -250,5 +251,6 @@ scalePath rootNote origin radius =
         , fill "none"
         , stroke "black"
         , transform ("rotate(" ++ String.fromFloat pathRotation ++ ", " ++ String.fromFloat origin ++ "," ++ String.fromFloat origin ++ ")")
+        , css [ transition [ Css.Transitions.transform3 500 0 Css.Transitions.easeOut ] ]
         ]
         []
